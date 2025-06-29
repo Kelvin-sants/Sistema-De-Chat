@@ -7,25 +7,17 @@ import java.io.*;
 
 /*A classe GerenciaUsuario é responsável por gerenciar todos os clientes que se conectam ao sistema */
 
-public class GerenciaUsuario extends Usuario {
+public class GerenciaUsuario {
 
     //atributos:
    private Map<String, Usuario> usuariosOnline;
 
 
    //construtor: para usuarios comuns
-   public GerenciaUsuario(String nome, boolean ehAdm) 
+   public GerenciaUsuario() 
    {
-        super(nome);
-        this.setStatusAdm(ehAdm);
         this.usuariosOnline = new ConcurrentHashMap<>();
-   }
-   //construtor: para usuarios administradores
-   public GerenciaUsuario(String nome)
-   {
-     this(nome, true);
-   }
-
+    }
  
    /*-------------------------Métodos-------------------------*/
 
@@ -42,13 +34,7 @@ public class GerenciaUsuario extends Usuario {
 
             //avisa a conexão do usuario
             usuariosOnline.put(u.getNome(), u);
-            System.out.println("->" + this.getNome() +  u.getNome() + "conectado(a) ao servidor com sucesso.") ;
-
-            //avisa ao adm em sala sobre a conexão
-            if(this.getSalaAtual() != null) {
-                this.getSalaAtual().broadcast(u.getNome() + "está conectado(a) ao servidor ", this);
-            }
-
+            System.out.println("->" + u.getNome() + "conectado(a) ao servidor com sucesso.") ;
             return true;
         }
         return false;
@@ -75,11 +61,6 @@ public class GerenciaUsuario extends Usuario {
 
                     //avisa geralmente sobre a remoção
                     System.out.println("Usuario " + u.getNome() + " foi removido(a) do servidor");
-
-                    //avisa em sala
-                    if (this.getSalaAtual() != null) {
-                        this.getSalaAtual().broadcast(u.getNome() + "foi removido(a) do servidor", this);
-                    }
                     return true;
                 }
                 return true;
@@ -105,28 +86,40 @@ public class GerenciaUsuario extends Usuario {
    /*_________________________________________________________________________________________ */
 
    //desconecta um usuario pelo nome
-   public synchronized boolean desconectarUsuarioNome(String nome) 
-   {
-        //avisa que não é possivel desconectar um usuario se não for adm
-        if(!this.getStatusAdm()) {
-            System.out.println(this.getNome() + " sem permissao para desconectar outros usuarios");
+  public synchronized boolean desconectarUsuarioNome(Usuario solicitante, String nomeUsuario) {
+        // Verifica se é um adm válido
+        if(solicitante == null || !solicitante.ehAdm()) {
+            System.out.println((solicitante != null ? solicitante.getNome() : "Null") +  " não tem permissão para desconectar");
             return false;
         }
-
-        Usuario u = getUsuarioPorNome(nome);
-        if(u!= null) {
-            try {
-                System.out.println("Usuario desconectado: " + nome);
-
-                return removerUsuario(u);
-            } catch(Exception e) {
-                System.err.println("Erro ao desconectar "+ nome + "(" + e.getMessage() + ")"); 
-                return false;
-            }
+    
+        // Verifica usuário alvo
+        if(nomeUsuario == null || nomeUsuario.trim().isEmpty()) {
+            System.out.println("Nome de usuario invalido");
+            return false;
         }
-        return false;
-   }
-
+    
+        Usuario usuarioAlvo = getUsuarioPorNome(nomeUsuario);
+        if(usuarioAlvo == null) {
+            System.out.println("Usuario " + nomeUsuario + " nao encontrado");
+            return false;
+        }
+    
+        // Executa desconexão
+        try {
+            if(usuarioAlvo.getSocket() != null && !usuarioAlvo.getSocket().isClosed()) {
+                usuarioAlvo.getSocket().close();
+            }
+            boolean removido = removerUsuario(usuarioAlvo);
+            if(removido) {
+                System.out.println(solicitante.getNome() + " desconectou " + nomeUsuario);
+            }
+            return removido;
+        } catch(Exception e) {
+            System.err.println("Erro ao desconectar " + nomeUsuario + ": " + e.getMessage());
+            return false;
+        }
+    }
    /*________________________________________________________________________________________ */
 
    //Move um usuário para uma sala
