@@ -1,47 +1,68 @@
-
+import java.io.*;
+import java.net.Socket;
 import java.util.Scanner;
-import java.net.*;
-import java.io.IOException;
-import java.io.PrintStream;
 
-public class Usuario{
+public class Usuario {
 
-    //atributos:
     private String nome;
     private boolean ehAdm;
     private Sala salaAtual;
 
-    public Usuario(String nome){
-        this.nome = nome;
-        ehAdm = false;
-        salaAtual = null;
+    private Socket socket;
+    private PrintStream out;
+    private Scanner in;
+
+    public Usuario(Socket socket) throws IOException {                          //metodo construtor
+        this.socket = socket;
+        this.out = new PrintStream(socket.getOutputStream(), true);
+        this.in = new Scanner(new InputStreamReader(socket.getInputStream()));
+        this.ehAdm = false;
+        this.salaAtual = null;
     }
 
-    //métodos:
+    // --- Métodos de comunicação ---
+    public void enviarMensagem(String msg) {
+        out.println(msg);
+    }
 
-    //setters:
-    public void setNome(String nome){
+    public String lerMensagem() throws IOException {
+        return in.nextLine();
+    }
+
+    // --- Getters e Setters ---
+    public void setNome(String nome) {
         this.nome = nome;
-    } //define o nome do usuário
+    }
 
-    public void setStatusAdm(boolean setStatusAdm){
-        this.ehAdm = setStatusAdm;
-    } // define o status do usuário 
+    public void setStatusAdm(boolean statusAdm) {
+        this.ehAdm = statusAdm;
+    }
 
-    public void setSala(Sala sala){
+    public void setSala(Sala sala) {
         this.salaAtual = sala;
-    } // define a sala em que o usuario vai estar
+    }
 
-    //getters: 
-    public String getNome(){
+    public String getNome() {
         return this.nome;
-    } 
+    }
 
-    public boolean getStatusAdm(){
+    public boolean getStatusAdm() {
         return this.ehAdm;
     }
 
-    public Sala getSalaAtual(){
+    public Sala getSalaAtual() {
         return this.salaAtual;
+    }
+
+    public Socket getSocket() {
+        return this.socket;
+    }
+
+    public PrintStream getOut() {
+        return this.out;
+    }
+
+    public Scanner getIn() {
+        return this.in;
     }
 }
