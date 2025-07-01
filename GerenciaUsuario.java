@@ -88,20 +88,20 @@ public class GerenciaUsuario {
    //desconecta um usuario pelo nome
   public synchronized boolean desconectarUsuarioNome(Usuario solicitante, String nomeUsuario) {
         // Verifica se é um adm válido
-        if(solicitante == null || !solicitante.ehAdm()) {
-            System.out.println((solicitante != null ? solicitante.getNome() : "Null") +  " não tem permissão para desconectar");
+        if(solicitante == null || !solicitante.getStatusAdm()) {
+            solicitante.getOut().println((solicitante != null ? solicitante.getNome() : "Null") +  " não tem permissão para desconectar");
             return false;
         }
     
         // Verifica usuário alvo
         if(nomeUsuario == null || nomeUsuario.trim().isEmpty()) {
-            System.out.println("Nome de usuario invalido");
+            solicitante.getOut().println("Nome de usuario invalido");
             return false;
         }
     
         Usuario usuarioAlvo = getUsuarioPorNome(nomeUsuario);
         if(usuarioAlvo == null) {
-            System.out.println("Usuario " + nomeUsuario + " nao encontrado");
+            solicitante.getOut().println("Usuario " + nomeUsuario + " nao encontrado");
             return false;
         }
     
@@ -117,6 +117,7 @@ public class GerenciaUsuario {
             return removido;
         } catch(Exception e) {
             System.err.println("Erro ao desconectar " + nomeUsuario + ": " + e.getMessage());
+            solicitante.getOut().println("Erro ao desconectar " + nomeUsuario + ": " + e.getMessage());
             return false;
         }
     }

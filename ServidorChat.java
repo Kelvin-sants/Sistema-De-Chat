@@ -23,7 +23,8 @@ public class ServidorChat {
                 
                 socketCliente = servidor.accept();                                                          //espera o usuario conectar no servidor
                 System.out.println("Novo cliente conectado, ID: " + socketCliente.getInetAddress());            //informa no servidor que um novo cliente se conectou
-                ClientHandler handler = new ClientHandler(socketCliente, GerenciaUsuarios, GerenciaSalas);      //cria uma nova ClientHandler para aquele cliente
+                Usuario usuario = new Usuario(socketCliente);
+                ClientHandler handler = new ClientHandler(usuario, GerenciaUsuarios, GerenciaSalas);      //cria uma nova ClientHandler para aquele cliente
                 Thread  threadHandler = new Thread(handler);                        //colocando handler em uma thread
                 threadHandler.start();                                            // Inicia a thread (vai executar o run() do handler)
             }

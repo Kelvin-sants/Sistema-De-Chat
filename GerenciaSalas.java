@@ -12,7 +12,7 @@ public class GerenciaSalas {
     }
 
     // Método para criar uma nova sala
-    public boolean criarSala(String nomeSala) {
+    public boolean criarSala(String nomeSala, Usuario usuario) {
         if (salasAtivas.containsKey(nomeSala)) {
             return false;                           // sala já existe
         } else {

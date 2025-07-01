@@ -32,7 +32,8 @@ public class Sala {
 
         //adicionar Usuário
 
-   // synchronized: garante que só uma pessoa por vez possa entrar na sala ao mesmo tempo (evita bagunça no código)     
+   // synchronized: garante que só uma pessoa por vez possa entrar na sala ao mesmo tempo (evita bagunça no código) 
+      
    public synchronized boolean adicionarUsuario(Usuario u) {
     //ele verifica se o usuário é nulo e se está ou nao na sala 
         if (u != null && !usuarios.contains(u)) {
