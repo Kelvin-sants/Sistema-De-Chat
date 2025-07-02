@@ -1,16 +1,13 @@
+//classe responsavel por tratar individualmente cada cliente conectado ao servidor
+//recebe um comando enviado pelo cliente e usa a classe ControladorDeComandos para executar a ação necessária
+
 import java.io.BufferedReader;
 import java.io.IOException;
-//import java.io.PrintStream;
 import java.io.PrintWriter;
-//import java.net.ServerSocket;
-//import java.net.Socket;
-//import java.util.Scanner;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
 
 public class ClientHandler implements Runnable{
     
-    private Usuario usuario;
+    private Usuario usuario;                                            //atributos da classe ClienteHandler
     private GerenciaSalas gerenciaSalas;
     private GerenciaUsuario gerenciaUsuarios;
     private ControladorDeComandos controladorDeComandos;
@@ -25,54 +22,48 @@ public class ClientHandler implements Runnable{
         this.controladorDeComandos = new ControladorDeComandos(usuario);
     }
     
-    BufferedReader entrada = null;
+    BufferedReader entrada = null;                                          //declarando variaveis
     PrintWriter saida = null;
     String comando;
 
     @Override
-    public void run(){                          //parte que vai ser rodada em paralelo quando chamar thread
+    public void run(){                                                          //parte que vai ser executada em paralelo quando chamar thread
 
-
-        try{
-
-            saida = usuario.getOut();
-            entrada = usuario.getIn();
+        try{                                                                    //tenta executar esse bloco de código
+            saida = usuario.getOut();                                           //saida será o canal out do socket
+            entrada = usuario.getIn();                                          //entrada será o canal in do socket
 
             while(true){         
-
-                comando = entrada.readLine();           //lendo os comandos enviados pelo cliente
-                
-                if(comando != null){                                                                          //se tiver algum comando
-                    controladorDeComandos.interpretaComando(comando, gerenciaUsuarios, gerenciaSalas);        //interpretando o comando
-                    /*if(comando.equals("/sairServidor")){                        //se o usuario enviou "/sair" para de ler
+                comando = entrada.readLine();                                   //lendo os comandos enviados pelo cliente
+                if(comando != null){                                                                          //se tiver algum comando diferente de null
+                    controladorDeComandos.interpretaComando(comando, gerenciaUsuarios, gerenciaSalas);        //interpreta o comando
+                    if(comando.equals("/sairServidor")){                   //se o usuario enviou "/sairServidor" encerra o while
                         break;
-                    }*/
+                    }
                 }
             }
 
-       }catch(Exception e){                                                               //tratando erros
+       }catch(Exception e){                                                               //em caso de exceção
+            System.out.println("Erro na comunicacao com o cliente: " +usuario.getNome() +" ERRO: " + e.getMessage());       //informa o erro no terminal do servidor
 
-            System.out.println("Erro na comunicacao com o cliente: " +usuario.getNome() +" ERRO: " + e.getMessage());
-
-       }finally{                                                                           //executa apos parar de ler ou depois da exceção 
+       }finally{                                                                           //executa após parar de ler ou depois da exceção 
         
             try{
-                if(entrada != null){
-                    entrada.close();
+                if(entrada != null){                                                    //se a entrada não tiver fechada
+                    entrada.close();                                                    //fecha a entrada
                 }
-                if(saida != null){
-                    saida.close();
+                if(saida != null){                                                      //se a saida não tiver fechada
+                    saida.close();                                                      //fecha a saida
                 }
-                if (usuario.getSocket() != null && !usuario.getSocket().isClosed()) {
-                    usuario.getSocket().close();                                                // Fecha o socket explicitamente
+                if (usuario.getSocket() != null && !usuario.getSocket().isClosed()) {       //se o socket não estiver fechado
+                    usuario.getSocket().close();                                            // Fecha o socket explicitamente
                 }
 
-            }catch(IOException e){
-                
-                System.out.println("Erro ao fechar entrada e/ou socketCliente");
+            }catch(IOException e){                                                          //em caso de exceção ao tentar encerrar o socket
+                System.out.println("Erro ao fechar entrada e/ou socketCliente");        //informa o erro no terminal do servidor
             }
        }
 
-    }       //fim metodo run
+    }
 
-}           //fim classe ClienteHandler
+}   
