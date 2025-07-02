@@ -1,12 +1,9 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.ServerSocket;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
+
 
 public class AppUsuario {
     
@@ -15,58 +12,61 @@ public class AppUsuario {
     public static void main(String[] args){
     
         Socket cliente = null;
-        Scanner teclado = null;
-        PrintStream saida = null;
+        PrintWriter saida = null;
         String comando;
-        BufferedReader entrada = null;
+        Scanner teclado = null;
+        RecebimentoUsuario entrada;
+        Thread SistemaEntrada = null;
 
         try{    
             cliente = new Socket("localhost",PORTA);                                //conecta ao servidor
-            System.out.println("Voce se conectou aos servidor de chat\nBem Vindo(a)!");
+            System.out.println("Você se conectou aos servidor de chat\nBem Vindo(a)!");
+
             teclado = new Scanner(System.in);
-            saida = new PrintStream(cliente.getOutputStream());                             //Cria um objeto PrintStream que envia mensagens do cliente para o servidor pela conexão do Socket
-            entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 
-            while(teclado.hasNextLine()){                                   //verifica se algo foi digitado
+            saida = new PrintWriter(cliente.getOutputStream(), true);                             //Cria um objeto PrintStream que envia mensagens do cliente para o servidor pela conexão do Socket
+            
+            entrada = new RecebimentoUsuario(cliente);                      //cria uma thread para ficar recebendo as mensagens em paralelo
+            SistemaEntrada = new Thread(entrada);
+            SistemaEntrada.start();
 
-                comando = teclado.nextLine();
-                saida.println(comando);                                    //envia o que foi digitado para o servidor
+            comando = null;
+        
 
-                if(entrada.ready()){                                        //verifica se chegou alguma mensagem para o cliente mas sem bloquear a execução
-                    System.out.print(entrada.readLine());
-                }
+            while(true){                        
+                comando = teclado.nextLine();                   //espera algo ser escrito
+                saida.println(comando);                         //manda o que foi escrito para o servidor
 
-                if(comando.equals("/sair")){                       //se o usuario digitou "/sair"
-                    break;                                                  //sai do laço
-                }
-                
+                if(comando != null){
+                    if(comando.equals("/sairServidor")){                       //se o usuario digitou "/sair"
+                        System.out.println("SERVIDOR: Você escolheu sair do servidor");
+                        break;                                                  //sai do laço
+                    }
+                } 
             }
 
         }catch(IOException e){
-            System.err.println("Nao foi possivel se conectar ao servidor; ERRO: " + e.getMessage());
+            System.err.println("SERVIDOR: Não foi possível se conectar ao servidor; ERRO: " + e.getMessage());
 
         }finally{
-
             try{
-
                 if(teclado != null){
                     teclado.close();
                 }
                 if(saida != null){
                     saida.close();
                 }
-        
-                if(entrada != null){
-                     entrada.close();
+                if(SistemaEntrada != null){
+                    SistemaEntrada.interrupt();
                 }
-
                 if (cliente != null){
                     cliente.close(); // Fecha o socket explicitamente
                 }
-
             }catch(IOException e){
                 System.out.println("Erro ao fechar entrada e/ou socketCliente");
             }
+
+            System.out.println("CONEXÃO ENCERRADA");
         }
     }
 }

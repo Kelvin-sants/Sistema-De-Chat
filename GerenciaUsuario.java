@@ -1,8 +1,8 @@
 /*Importando bibliotecas */
 import java.util.*;
 import java.util.concurrent.*;
-import java.net.*;
-import java.io.*;
+//import java.net.*;
+//import java.io.*;
 
 
 /*A classe GerenciaUsuario é responsável por gerenciar todos os clientes que se conectam ao sistema */
@@ -95,13 +95,13 @@ public class GerenciaUsuario {
     
         // Verifica usuário alvo
         if(nomeUsuario == null || nomeUsuario.trim().isEmpty()) {
-            solicitante.getOut().println("Nome de usuario invalido");
+            solicitante.getOut().println("SERVIDOR: Nome de usuario invalido");
             return false;
         }
     
         Usuario usuarioAlvo = getUsuarioPorNome(nomeUsuario);
         if(usuarioAlvo == null) {
-            solicitante.getOut().println("Usuario " + nomeUsuario + " nao encontrado");
+            solicitante.getOut().println("SERVIDOR: Usuario " + nomeUsuario + " nao encontrado");
             return false;
         }
     

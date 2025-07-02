@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class Usuario {
 
@@ -9,13 +8,13 @@ public class Usuario {
     private Sala salaAtual;
 
     private Socket socket;
-    private PrintStream out;
-    private Scanner in;
+    private PrintWriter out;
+    private BufferedReader in;
 
     public Usuario(Socket socket) throws IOException {                          //metodo construtor
         this.socket = socket;
-        this.out = new PrintStream(socket.getOutputStream(), true);
-        this.in = new Scanner(new InputStreamReader(socket.getInputStream()));
+        this.out = new PrintWriter(socket.getOutputStream(), true);
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.ehAdm = false;
         this.salaAtual = null;
     }
@@ -26,7 +25,7 @@ public class Usuario {
     }
 
     public String lerMensagem() throws IOException {
-        return in.nextLine();
+        return in.readLine();
     }
 
     // --- Getters e Setters ---
@@ -58,11 +57,11 @@ public class Usuario {
         return this.socket;
     }
 
-    public PrintStream getOut() {
+    public PrintWriter getOut() {
         return this.out;
     }
 
-    public Scanner getIn() {
+    public BufferedReader getIn() {
         return this.in;
     }
 }
