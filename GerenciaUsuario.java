@@ -1,9 +1,5 @@
-/*Importando bibliotecas */
 import java.util.*;
 import java.util.concurrent.*;
-//import java.net.*;
-//import java.io.*;
-
 
 /*A classe GerenciaUsuario é responsável por gerenciar todos os clientes que se conectam ao sistema */
 
@@ -28,7 +24,7 @@ public class GerenciaUsuario {
         if(u.getNome() != null) {
 
             //verifica se o nome escolhido já está em uso
-            if(usuariosOnline.containsKey(u.getNome())) {
+            if(usuariosOnline.containsKey(u.getNome())){
                 return false;
             }
 
