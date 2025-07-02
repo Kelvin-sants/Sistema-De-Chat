@@ -1,3 +1,5 @@
+package servidor;
+
 import java.util.ArrayList;
 
 // Classe responsável por encapsular o estado de uma sala individual de chat
@@ -36,7 +38,7 @@ public class Sala {
                 usuarios.add(u); //  Adiciona o usuário à lista de usuários
                 u.setSala(this);   // Notifica ao usuário sua entrada 
                 broadcastSemRemetente("SERVIDOR: " + u.getNome() + " entrou na sala.", u); // Informa a todos da sala que o usuário x entrou na sala
-                System.out.println("Usuario " + u.getNome() + " entrou na sala " + this.nome);      //imprime no terminal do servidor
+                //System.out.println("Usuario " + u.getNome() + " entrou na sala " + this.nome);      //imprime no terminal do servidor
                 return true; // Sucesso
             }
         }

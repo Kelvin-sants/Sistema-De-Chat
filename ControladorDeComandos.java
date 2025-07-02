@@ -1,3 +1,5 @@
+package servidor;
+
 //classe responsavel por receber os comandos de ClientHandler e executar cada um
 //classe auxiliar para aliviar a classe ClientHandler
 
@@ -120,7 +122,7 @@ public class ControladorDeComandos {
                         if(sala != null){                                                   //se a sala é valida
                             if(sala.adicionarUsuario(usuario)){                             //tenta adiciona usuario a sala, se conseguir:
                                 usuario.getOut().println("SERVIDOR: voce entrou na sala " + nomeSala);      //informa o usuario que ele entrou na sala
-                                System.out.println(usuario.getNome() + "entrou na sala " + sala.getNome());     //informa no terminal do servidor que o usuario entrou na sala
+                                System.out.println(usuario.getNome() + " entrou na sala " + sala.getNome());     //informa no terminal do servidor que o usuario entrou na sala
                             }else{                                                                              //se não conseguir adicionar o usuario a sala
                                 usuario.getOut().println("SERVIDOR: nao foi possivel entrar na sala");          //informa que não foi possivel entrar na sala
                             }
@@ -145,7 +147,7 @@ public class ControladorDeComandos {
                     if(sala.removerUsuario(usuario)){                                           //tenta remover o usuario da sala
                         usuario.setSala(null);                                             //remove a referencia de usuario a sala
                         usuario.getOut().println("SERVIDOR: Voce saiu da sala");               //informa o usuário a sua saída da sala
-                        System.out.println(usuario.getNome() + "saiu da sala" + sala.getNome()); //imprime no terminal do servidor a saída do usuário da sala
+                        System.out.println(usuario.getNome() + " saiu da sala" + sala.getNome()); //imprime no terminal do servidor a saída do usuário da sala
                     }else{                                                                       //se não conseguir remover o usuário da sala
                         usuario.getOut().println("SERVIDOR: Nao foi possivel sair da sala");   //informa o usuário que não foi possivel remover
                     }
@@ -273,7 +275,7 @@ public class ControladorDeComandos {
                             if(senha.equals("JAVA123")){                   //se a senha estiver correta
                                 usuario.setStatusAdm(true);               //transforma ele em administrador
                                 usuario.getOut().println("SERVIDO: agora voce e um administrador");      //informa o usuario que agora ele é um administrador
-                                System.out.println(usuario.getNome() + "virou administrador");          //informa no terminal do servidor que o usuário virou administrador
+                                System.out.println(usuario.getNome() + " virou administrador");          //informa no terminal do servidor que o usuário virou administrador
                             }else{                                                  //caso a senha esteja incorreta
                                 usuario.getOut().println("SERVIDOR: senha incorreta");         //informa o usuário que a senha está incorreta
                             }

@@ -1,3 +1,5 @@
+package cliente;
+
 //classe auxilar para receber mensagens enviadas pelo servidor e imprimir no terminal
 //É uma classe Runnable para ser usada juntamente com um thread; o objetivo é executar em paralelo ao envio de mensagens
 

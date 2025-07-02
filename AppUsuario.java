@@ -1,3 +1,5 @@
+package cliente;
+
 //classe responsavel por executar o executar o App do cliente
 //envia os comandos do usuário para ClienteHandler
 //recebe as entradas enviadas do servidor pela classe auxiliar RecebimentoUsuario

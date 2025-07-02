@@ -1,3 +1,5 @@
+package servidor;
+
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -21,7 +23,7 @@ public class GerenciaUsuario {
    public synchronized boolean adicionarUsuario(Usuario u)
    {
     if(u != null) {
-        if(u.getNome() != null) { //verifica se o usuário existe e se ele tem nome
+        if(u.getNome() != null) {
 
             //verifica se o nome escolhido já está em uso
             if(usuariosOnline.containsKey(u.getNome())){
@@ -30,7 +32,7 @@ public class GerenciaUsuario {
 
             //avisa a conexão do usuario
             usuariosOnline.put(u.getNome(), u);
-            System.out.println("->" + u.getNome() + "conectado(a) ao servidor com sucesso.") ;
+            System.out.println("-> " + u.getNome() + " conectado(a) ao servidor com sucesso.") ;
             return true;
         }
         return false;
@@ -45,9 +47,9 @@ public class GerenciaUsuario {
    {
         if(u!= null) {
             if(u.getNome() != null) {
-                Usuario removido = usuariosOnline.remove(u.getNome()); //se o usuário existir e tiver um nome, ele será removido
+                Usuario removido = usuariosOnline.remove(u.getNome());
                 
-                if(removido != null) { 
+                if(removido != null) {
 
                     //remove o usuario da sala se ele estiver em uma
                     if(u.getSalaAtual() != null) {
@@ -72,8 +74,8 @@ public class GerenciaUsuario {
    public Usuario getUsuarioPorNome(String nome)
     {
         if(nome != null) {
-            if(!nome.trim().isEmpty()) { //se a string não for vazia
-                return usuariosOnline.get(nome);  //retorna seu nome
+            if(!nome.trim().isEmpty()) {
+                return usuariosOnline.get(nome);
             }
         }
         return null;
@@ -123,21 +125,20 @@ public class GerenciaUsuario {
    public synchronized boolean moverUsuarioParaSala(Usuario u, Sala novaSala)
    {
         if(u!=null) {
-            Sala salaAtual = u.getSalaAtual(); //captura  a sala que o usuario esta antes dele mudar
+            Sala salaAtual = u.getSalaAtual();
             if(salaAtual != null) {
-                salaAtual.removerUsuario(u); // remove o usuario da sala
+                salaAtual.removerUsuario(u);
                 //avisa que o usuario saiu da sala
                 salaAtual.broadcast(u.getNome() + " saiu da sala.", null);
             }
 
             if(novaSala != null) {
-                novaSala.adicionarUsuario(u); //agora adiciona o usuario para a nova sala
-                u.setSala(novaSala); //faz um set de sala para usuario
-                //avisos:
-                novaSala.broadcast(u.getNome() + " entrou na sala", null); 
+                novaSala.adicionarUsuario(u);
+                u.setSala(novaSala);
+                novaSala.broadcast(u.getNome() + " entrou na sala", null);
                 System.out.println(u.getNome() + "movido para a sala " + novaSala.getNome());
             } else {
-                u.setSala(null); //se der errado, ele fica sem sala (sala = null)
+                u.setSala(null);
             }
 
             return true;

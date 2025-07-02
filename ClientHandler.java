@@ -1,3 +1,5 @@
+package servidor;
+
 //classe responsavel por tratar individualmente cada cliente conectado ao servidor
 //recebe um comando enviado pelo cliente e usa a classe ControladorDeComandos para executar a ação necessária
 
