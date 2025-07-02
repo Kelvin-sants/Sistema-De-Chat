@@ -35,8 +35,8 @@ public class Sala {
                 // Verifica se o usuário está na sala
                 usuarios.add(u); //  Adiciona o usuário à lista de usuários
                 u.setSala(this);   // Notifica ao usuário sua entrada 
-                broadcast("SERVIDOR: " + u.getNome() + " entrou na sala.", u); // Informa a todos da sala que o usuário x entrou na sala
-                System.out.println("Usuario " + u.getNome() + " entrou na sala " + this.nome);
+                broadcastSemRemetente("SERVIDOR: " + u.getNome() + " entrou na sala.", u); // Informa a todos da sala que o usuário x entrou na sala
+                System.out.println("Usuario " + u.getNome() + " entrou na sala " + this.nome);      //imprime no terminal do servidor
                 return true; // Sucesso
             }
         }
@@ -47,8 +47,7 @@ public class Sala {
         if (u != null){    // Caso o usuario seja válido
             if(usuarios.contains(u)){ // Se o usuario estiver na sala
                 usuarios.remove(u);   // Remove o usuário da lista de usuários
-                broadcast("SERVIDOR: " + u.getNome() + " saiu da sala.", u);              // Notifica a saida para o grupo
-                System.out.println("Usuario " + u.getNome() + "saiu da sala " + this.nome);
+                broadcastSemRemetente("SERVIDOR: " + u.getNome() + " saiu da sala.", u);              // Notifica a saida para o grupo
                 return true;
             }
         }
@@ -71,6 +70,7 @@ public class Sala {
                 u.getOut().println(msg);
             }
         }
+        return;
     }
     
     // Lista os nomes dos usuários na sala
@@ -79,6 +79,25 @@ public class Sala {
         for (Usuario u : usuarios) {
             System.out.println("- " + u.getNome()); // Imprime o nome de cada usuário
         }
+        return;
+    }
+
+    public synchronized void broadcastSemRemetente(String msg, Usuario remetente) {
+        // Cria uma cópia da lista de usuários 
+        ArrayList<Usuario> copia = new ArrayList<>(usuarios);
+        for (Usuario u : copia) {
+            // Se houver um remetente especificado (não nulo)
+            if (remetente != null){
+                // E o usuário atual no loop não for o remetente
+                if(!u.getNome().equals(remetente.getNome())) {
+                    // Envia a mensagem formatada
+                    u.getOut().println(msg);
+                }
+            }else{      //remetente == null
+                u.getOut().println(msg);
+            }
+        }
+        return;
     }
 }
 
