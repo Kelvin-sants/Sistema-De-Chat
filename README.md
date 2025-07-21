@@ -24,7 +24,7 @@ O projeto é dividido em dois principais componentes:
 - Interface de linha de comando simples
 
 #### Comandos: 
-```/login nome```: entra no servidor com o nome do cliente
+```\login nome```: entra no servidor com o nome do cliente
 
 ```\salas```: mostra as salas disponíveis
 
